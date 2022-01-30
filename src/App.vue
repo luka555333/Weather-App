@@ -15,12 +15,12 @@
       </div>
       <div class="location-and-date">
         <p class="searched-town-p">{{ this.weather.city }}</p>
-        <p class="date-p">Monday 16 january</p>
+        <p class="date-p">{{ getDate() }}</p>
       </div>
       <div class="searched-weather">
         <div class="weather-of-searched-town">
           <div class="temperature-img">
-            <img :src="`${getWeatherType()}`" />
+            <img :src="getWeatherType()" />
           </div>
           <div class="temperature-in-town">
             <p> {{ Math.round(this.weather.temparature) }}&#8451; </p>
@@ -64,37 +64,51 @@
       <div class="todays-weather">
         <div class="todays-days">
           <p class="todays-p">3h</p>
-          <img :src="`${getWeatherTypeAt3h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt3h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_3h.temperature_at_3h) }}&#176;</p>
         </div>
         <div class="todays-days">
           <p class="todays-p">6h</p>
-          <img :src="`${getWeatherTypeAt6h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt6h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_6h.temperature_at_6h) }}&#176;</p>
         </div>
         <div class="todays-days">
           <p class="todays-p">9h</p>
-          <img :src="`${getWeatherTypeAt9h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt9h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_9h.temperature_at_9h) }}&#176;</p>
         </div>
-        <div class="todays-days">
+        <div class="todays-days reseting-margin-12h">
           <p class="todays-p">12h</p>
-          <img :src="`${getWeatherTypeAt12h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt12h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_12h.temperature_at_12h) }}&#176;</p>
         </div>
         <div class="todays-days">
           <p class="todays-p">15h</p>
-          <img :src="`${getWeatherTypeAt15h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt15h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_15h.temperature_at_15h) }}&#176;</p>
         </div>
-        <div class="todays-days">
+        <div class="todays-days reseting-margin-18h">
           <p class="todays-p">18h</p>
-          <img :src="`${getWeatherTypeAt18h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt18h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_18h.temperature_at_18h) }}&#176;</p>
         </div>
-        <div class="todays-days">
+        <div class="todays-days reseting-margin-21h">
           <p class="todays-p">21h</p>
-          <img :src="`${getWeatherTypeAt21h()}`"/>
+          <div class="todays-svg">
+          <img :src="getWeatherTypeAt21h()"/>
+          </div>
           <p class="todays-p">{{ Math.round(this.weather_at_21h.temperature_at_21h) }}&#176;</p>
         </div>
       </div>
@@ -109,11 +123,11 @@ export default {
   name: 'App',
   data() {
     return {
-      api_key: '9b4489ce7401a706d600d26a991bba11',
       city: 'belgrade',
-      url: 'https://api.openweathermap.org/data/2.5/',
-      url_hourly: 'https://api.weatherapi.com/v1/forecast.json',
-      api_key_hourly: 'cee71b1b0f08435abfc112252222601',
+      url: 'https://api.weatherapi.com/v1/forecast.json',
+      api_key: 'cee71b1b0f08435abfc112252222601',
+      days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
       weather: {},
       weather_at_3h:{},
       weather_at_6h:{},
@@ -136,12 +150,12 @@ export default {
         sleet: require('./assets/animated/sleet.svg'),
         patchy_rain_possible: require('./assets/animated/patchy_rain_possible.svg'),
       },
-    }/*this.url}weather?q=${this.city}&units=metric&appid=${this.api_key*/
+    }
   },
   methods: {
     async fetchWeather() {
       try {
-        const {data} = await axios.get(`${this.url_hourly}?key=${this.api_key_hourly}&q=${this.city}&days=1&aqi=no&alerts=no`);
+        const {data} = await axios.get(`${this.url}?key=${this.api_key}&q=${this.city}&days=1&aqi=no&alerts=no`);
         console.log(data);
         this.error = false;
         this.weather = {
@@ -200,7 +214,7 @@ export default {
     if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -236,7 +250,7 @@ export default {
      if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -272,7 +286,7 @@ export default {
     if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -308,7 +322,7 @@ export default {
    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -344,7 +358,7 @@ export default {
    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -380,7 +394,7 @@ export default {
    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -416,7 +430,7 @@ export default {
    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -452,7 +466,7 @@ export default {
    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
       return this.weatherTypes.overcast;
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1){
+    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
       return this.weatherTypes.snow;
     }
     else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
@@ -483,6 +497,10 @@ export default {
       return this.weatherTypes.patchy_rain_possible;
     }
   },
+  getDate(){
+    let date = new Date();
+    return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
+  }
 },
   async mounted() {
     this.fetchWeather();
@@ -499,12 +517,13 @@ export default {
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
 }
-
+html{
+  width: 100%;
+}
 body {
-  background: #00c6ff;
 background: -webkit-linear-gradient(to right, #0072ff, #00c6ff);
 background: linear-gradient(to right, #0072ff, #00c6ff);
-
+background-attachment: fixed;
 }
 
 .main-container {
@@ -548,6 +567,7 @@ background: linear-gradient(to right, #0072ff, #00c6ff);
 }
 .searched-weather{
   display: flex;
+  flex-wrap: wrap;
   flex-basis: 100%;
   max-width: 100%;
 }
@@ -600,22 +620,22 @@ background: linear-gradient(to right, #0072ff, #00c6ff);
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-basis: 33%;
-  max-width: 33%;
+  flex-basis: 33.3333333333%;
+  max-width: 33.3333333333%;
 }
 .lowest{
   display: flex;
   align-items: center;
   flex-direction: column;
-  flex-basis: 33%;
-  max-width: 33%;
+  flex-basis: 33.3333333333%;
+  max-width: 33.3333333333%;
 }
 .rain{
   display: flex;
   align-items: center;
   flex-direction: column;
-  flex-basis: 33%;
-  max-width: 33%;
+  flex-basis: 33.3333333333%;
+  max-width: 33.3333333333%;
 }
 .weather-text-inner{
   color: rgba(255,255,255,0.5);
@@ -631,20 +651,122 @@ background: linear-gradient(to right, #0072ff, #00c6ff);
   max-width: 100%;
   margin-top: 1rem;
   color: white;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .todays-days{
   display: flex;
   flex-direction: column;
-  flex-basis: 14.2857142857%;
-  max-width: 14.2857142857%;
+  flex-basis: calc(14.2857142857% - 15px);
+  max-width: calc(14.2857142857% - 15px);
   align-items: center;
   padding: 0.6rem;
-  margin: 0px 15px 0px 0px;
+  margin: 15px 15px 0px 0px;
   background-color: rgba(255,255,255,0.3);
   border-radius: 0.6rem;
+  height: 100%;
 }
 .todays-p{
-  font-size: 1.2rem;
+  font-size: 0.9rem;
 }
-
+.todays-svg{
+  width: 5em;
+}
+.reseting-margin-21h{
+      margin-right: 0px;
+    }
+@media(max-width: 975px){
+  .main-container{
+    max-width: 720px;
+    width: 100%;
+  }
+  @media(max-width: 720px){
+    .main-container{
+      margin: 0;
+    }
+   .searched-weather{
+     justify-content: center;
+   }
+   .location-and-date{
+     padding-left: 1rem;
+   }
+   .weather-of-searched-town{
+     padding-left: 0 2.2rem;
+   }
+   .weather-of-searched-town{
+     flex: 0 0 100%;
+     max-width: 100%;
+     justify-content: center;
+   }
+   .weather-in-details{
+     flex: 0 0 90%;
+     max-width: 90%;
+     border-top: 1px solid white;
+     border-bottom : 1px solid white;
+     border-left: none;
+   }
+   .weather-in-details-inner{
+     margin-bottom: 15px;
+     padding:0.6rem;
+   }
+  }
+  @media(max-width: 645px){
+    .todays-weather{
+      justify-content: center;
+    }
+    .todays-svg{
+      width: 4.375em;
+    }
+    .todays-days{
+      flex-basis: calc(16.6666666667% - 15px);
+      max-width: calc(16.6666666667% - 15px);
+    }
+    .reseting-margin-18h{
+      margin-right: 0px;
+    }
+  }
+   @media(max-width: 550px){
+     .todays-svg{
+      width: 3.75em;
+    }
+    .todays-weather-text{
+      margin-left: 1rem;
+    }
+    .todays-days{
+      flex-basis: 20%;
+      max-width: 20%;
+    }
+    .reseting-margin-12h{
+      margin-right: 0px;
+    }
+    .reseting-margin-18h{
+      margin-right: 15px;
+    }
+   }
+  @media(max-width: 380px){
+    .weather-in-details-inner{
+      font-size: 0.8rem;
+    }
+    .temperature-img img{
+      width: 7.5rem;
+      height: 7.5rem;
+    }
+    .temperature-in-town{
+      font-size: 4rem;
+    }
+    .todays-weather-text{
+      margin-left: 0.8rem;
+      font-size: 0.8rem;
+    }
+    .text-temperature{
+      font-size: 1.1rem;
+    }
+    .todays-svg{
+      width: 3.125em;
+    }
+    .todays-p{
+      font-size: 0.7rem;
+    }
+  }
+}
 </style>
