@@ -10,20 +10,30 @@
             @keyup.enter="fetchWeather"
         >
       </div>
-      <div v-if="error" style="color: red;margin-top: 15px;">
+      <div v-if="error" class="error-p">
         Sorry, the city that you searched doesn't exist. <br> Please try again.
       </div>
       <div class="location-and-date">
-        <p class="searched-town-p">{{ this.weather.city }}</p>
+        <p class="searched-town-p">{{ weather.city }}</p>
         <p class="date-p">{{ getDate() }}</p>
       </div>
       <div class="searched-weather">
         <div class="weather-of-searched-town">
           <div class="temperature-img">
-            <img :src="getWeatherType()" />
+          <img src="./assets/animated/cloudy.svg" v-if="getCurrentWeather() === 'Cloudy' || getCurrentWeather() === 'Overcast'">
+          <img src="./assets/animated/snowy-6.svg" v-if="getCurrentWeather() === 'Moderate snow' || getCurrentWeather() === 'Snow' || getCurrentWeather() === 'Light snow' || getCurrentWeather() === 'Light snow showers'">
+          <img src="./assets/animated/rainy-7.svg" v-if="getCurrentWeather() === 'Rainy' || getCurrentWeather() === 'Light rain showers'">
+          <img src="./assets/animated/day.svg" v-if="getCurrentWeather() === 'Clear' || getCurrentWeather() === 'Sunny'">
+          <img src="./assets/animated/mist.svg" v-if="getCurrentWeather() === 'Mist'">
+          <img src="./assets/animated/fog.svg" v-if="getCurrentWeather() === 'Fog' || getCurrentWeather() === 'Freezing fog'"> 
+          <img src="./assets/animated/rainy-4.svg" v-if="getCurrentWeather() === 'Drizzle' || getCurrentWeather() === 'Light rain' || getCurrentWeather() === 'Light drizzle'">
+          <img src="./assets/animated/partly-cloudy-day.svg" v-if="getCurrentWeather() === 'Partly cloudy'"> 
+          <img src="./assets/animated/extreme-snow.svg" v-if="getCurrentWeather() === 'Heavy snow'">
+          <img src="./assets/animated/sleet.svg" v-if="getCurrentWeather() === 'Light sleet'">
+          <img src="./assets/animated/patchy_rain_possible.svg" v-if="getCurrentWeather() === 'Patchy rain possible'">
           </div>
           <div class="temperature-in-town">
-            <p> {{ Math.round(this.weather.temparature) }}&#8451; </p>
+            <p> {{ Math.round(weather.temperature) }}&#8451; </p>
             <div class="text-temperature">
             <p>{{ this.weather.forecast }}</p>
             </div>
@@ -32,29 +42,29 @@
         <div class="weather-in-details">
           <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ Math.round(this.weather.temp_max) }}&deg;</p>
+              <p>{{ Math.round(weather.temp_max) }}&deg;</p>
               <p class="weather-text-inner">Highest</p>
             </div>
             <div class="lowest">
-              <p>{{ Math.round(this.weather.temp_min) }}&deg;</p>
+              <p>{{ Math.round(weather.temp_min) }}&deg;</p>
               <p class="weather-text-inner">Lowest</p>
             </div>
             <div class="rain">
-              <p>{{ Math.round(this.weather.feels_like) }}&deg;</p>
+              <p>{{ Math.round(weather.feels_like) }}&deg;</p>
               <p class="weather-text-inner">Feels like</p>
             </div>
           </div>
           <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ this.weather.sunset }}</p>
+              <p>{{ weather.sunset }}</p>
               <p class="weather-text-inner">Sunset</p>
             </div>
             <div class="lowest">
-              <p>{{ this.weather.sunrise }}</p>
+              <p>{{ weather.sunrise }}</p>
               <p class="weather-text-inner">Sunrise</p>
             </div>
             <div class="rain">
-              <p>{{ this.weather.wind}} m/s</p>
+              <p>{{ weather.wind}} m/s</p>
               <p class="weather-text-inner">Wind</p>
             </div>
           </div>
@@ -62,54 +72,23 @@
       </div>
       <p class="todays-weather-text">Todays weather</p>
       <div class="todays-weather">
-        <div class="todays-days">
-          <p class="todays-p">3h</p>
+        <div class="todays-days" v-for="hour in weatherTimes" :key="hour" >
+          <p class="todays-p">{{ hour }}h</p>
           <div class="todays-svg">
-          <img :src="getWeatherTypeAt3h()"/>
+          <img src="./assets/animated/cloudy.svg" v-if="getWeatherTypeByHour(hour) === 'Cloudy' || getWeatherTypeByHour(hour) === 'Overcast'">
+          <img src="./assets/animated/snowy-6.svg" v-if="getWeatherTypeByHour(hour) === 'Moderate snow' || getWeatherTypeByHour(hour) === 'Snow' || getWeatherTypeByHour(hour) === 'Light snow' || getWeatherTypeByHour(hour) === 'Light snow showers'">
+          <img src="./assets/animated/rainy-7.svg" v-if="getWeatherTypeByHour(hour) === 'Rainy' || getWeatherTypeByHour(hour) === 'Light rain showers'">
+          <img src="./assets/animated/day.svg" v-if="getWeatherTypeByHour(hour) === 'Clear' || getWeatherTypeByHour(hour) === 'Sunny'">
+          <img src="./assets/animated/mist.svg" v-if="getWeatherTypeByHour(hour) === 'Mist'">
+          <img src="./assets/animated/fog.svg" v-if="getWeatherTypeByHour(hour) === 'Fog' || getWeatherTypeByHour(hour) === 'Freezing fog'"> 
+          <img src="./assets/animated/rainy-4.svg" v-if="getWeatherTypeByHour(hour) === 'Drizzle' || getWeatherTypeByHour(hour) === 'Light rain' || getWeatherTypeByHour(hour) === 'Light drizzle'">
+          <img src="./assets/animated/partly-cloudy-day.svg" v-if="getWeatherTypeByHour(hour) === 'Partly cloudy'"> 
+          <img src="./assets/animated/extreme-snow.svg" v-if="getWeatherTypeByHour(hour) === 'Heavy snow'">
+          <img src="./assets/animated/sleet.svg" v-if="getWeatherTypeByHour(hour) === 'Light sleet'">
+          <img src="./assets/animated/patchy_rain_possible.svg" v-if="getWeatherTypeByHour(hour) === 'Patchy rain possible'">
+
           </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_3h.temperature_at_3h) }}&#176;</p>
-        </div>
-        <div class="todays-days">
-          <p class="todays-p">6h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt6h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_6h.temperature_at_6h) }}&#176;</p>
-        </div>
-        <div class="todays-days">
-          <p class="todays-p">9h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt9h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_9h.temperature_at_9h) }}&#176;</p>
-        </div>
-        <div class="todays-days reseting-margin-12h">
-          <p class="todays-p">12h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt12h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_12h.temperature_at_12h) }}&#176;</p>
-        </div>
-        <div class="todays-days">
-          <p class="todays-p">15h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt15h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_15h.temperature_at_15h) }}&#176;</p>
-        </div>
-        <div class="todays-days reseting-margin-18h">
-          <p class="todays-p">18h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt18h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_18h.temperature_at_18h) }}&#176;</p>
-        </div>
-        <div class="todays-days reseting-margin-21h">
-          <p class="todays-p">21h</p>
-          <div class="todays-svg">
-          <img :src="getWeatherTypeAt21h()"/>
-          </div>
-          <p class="todays-p">{{ Math.round(this.weather_at_21h.temperature_at_21h) }}&#176;</p>
+          <p class="todays-p">{{ Math.round( weatherTime[hour][`temperature_at_${hour}h`]) }}&#176;</p>
         </div>
       </div>
     </div>
@@ -129,382 +108,73 @@ export default {
       days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
       months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
       weather: {},
-      weather_at_3h:{},
-      weather_at_6h:{},
-      weather_at_9h:{},
-      weather_at_12h:{},
-      weather_at_15h:{},
-      weather_at_18h:{},
-      weather_at_21h:{},
+      weatherTimes: [3,6,9,12,15,18,21],
+      weatherTime: [],
       error: false,
-      weatherTypes: {
-        overcast: require('./assets/animated/cloudy.svg'),
-        snow: require('./assets/animated/snowy-6.svg'),
-        rainy: require('./assets/animated/rainy-7.svg'),
-        clear: require('./assets/animated/day.svg'),
-        mist: require('./assets/animated/mist.svg'),
-        fog: require('./assets/animated/fog.svg'),
-        drizzle: require('./assets/animated/rainy-4.svg'),
-        partly_cloudy: require('./assets/animated/partly-cloudy-day.svg'),
-        heavy_snow: require('./assets/animated/extreme-snow.svg'),
-        sleet: require('./assets/animated/sleet.svg'),
-        patchy_rain_possible: require('./assets/animated/patchy_rain_possible.svg'),
-      },
     }
   },
   methods: {
     async fetchWeather() {
       try {
         const {data} = await axios.get(`${this.url}?key=${this.api_key}&q=${this.city}&days=1&aqi=no&alerts=no`);
-        console.log(data);
         this.error = false;
         this.weather = {
-          city: data.location.name,
-          temparature: data.current.temp_c,
-          forecast: data.current.condition.text,
-          temp_min: data.forecast.forecastday[0].day.mintemp_c,
-          temp_max: data.forecast.forecastday[0].day.maxtemp_c,
-          wind: data.current.wind_mph,
-          sunrise: data.forecast.forecastday[0].astro.sunrise,
-          sunset: data.forecast.forecastday[0].astro.sunset,
-          feels_like: data.current.feelslike_c,
+          city: data.location.name || 'Unknown',
+          temperature: data.current.temp_c || 0,
+          forecast: data.current.condition.text || 'Unknown',
+          temp_min: data.forecast.forecastday[0].day.mintemp_c || 0,
+          temp_max: data.forecast.forecastday[0].day.maxtemp_c || 0,
+          wind: data.current.wind_mph || 0,
+          sunrise: data.forecast.forecastday[0].astro.sunrise || 'Unknown',
+          sunset: data.forecast.forecastday[0].astro.sunset || 'Unknown',
+          feels_like: data.current.feelslike_c || 0
         },
-        this.weather_at_3h ={
-          forecast_3h: data.forecast.forecastday[0].hour[3].condition.text,
-          temperature_at_3h: data.forecast.forecastday[0].hour[3].temp_c,
-        },
-        this.weather_at_6h = {
-          forecast_6h: data.forecast.forecastday[0].hour[6].condition.text,
-          temperature_at_6h: data.forecast.forecastday[0].hour[6].temp_c,
-        },
-        this.weather_at_9h = {
-          forecast_9h: data.forecast.forecastday[0].hour[9].condition.text,
-          temperature_at_9h: data.forecast.forecastday[0].hour[9].temp_c,
-        },
-        this.weather_at_12h = {
-          forecast_12h: data.forecast.forecastday[0].hour[12].condition.text,
-          temperature_at_12h: data.forecast.forecastday[0].hour[12].temp_c,
-        },
-        this.weather_at_15h = {
-          forecast_15h: data.forecast.forecastday[0].hour[15].condition.text,
-          temperature_at_15h: data.forecast.forecastday[0].hour[15].temp_c,
-        },
-        this.weather_at_18h = {
-          forecast_18h: data.forecast.forecastday[0].hour[18].condition.text,
-          temperature_at_18h: data.forecast.forecastday[0].hour[18].temp_c,
-        },
-        this.weather_at_21h = {
-          forecast_21h: data.forecast.forecastday[0].hour[21].condition.text,
-          temperature_at_21h: data.forecast.forecastday[0].hour[21].temp_c,
-        }
+        
+        this.weatherTimes.forEach(time => {
+          this.weatherTime[time] ={
+          [`forecast_${time}h`]: data.forecast.forecastday[0].hour[time].condition.text,
+          [`temperature_at_${time}h`]: data.forecast.forecastday[0].hour[time].temp_c,
+          }
+        })
+        
       } catch (err) {
-        this.error = true;
-        this.weather = {
-          city: 'Unknown',
-          temparature: 'N/A',
-          forecast: 'Unknown',
-          sunrise: 'Unknown',
-          sunset: 'Unknown',
+       this.error = true;
+
+       this.weatherTimes.forEach(time => {
+          this.weatherTime[time] ={
+          [`forecast_${time}h`]: 0,
+          [`temperature_at_${time}h`]: 0
         }
-      }
+        })
+        
       this.city = '';
+    }
     },
-    getWeatherType(){
-      let obj = Object.values(this.weather);
-    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
+
+    getWeatherTypeByHour(hour){
+      return this.weatherTime[hour]?.[`forecast_${hour}h`];
+    },
+
+    getCurrentWeather(){
+     return this.weather.forecast;
+    },
+
+    getDate(){
+      let date = new Date();
+      return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
     }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt3h(){
-      let obj = Object.values(this.weather_at_3h);
-     if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt6h(){
-      let obj = Object.values(this.weather_at_6h);
-    if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt9h(){
-      let obj = Object.values(this.weather_at_9h);
-   if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt12h(){
-      let obj = Object.values(this.weather_at_12h);
-   if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt15h(){
-      let obj = Object.values(this.weather_at_15h);
-   if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt18h(){
-      let obj = Object.values(this.weather_at_18h);
-   if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getWeatherTypeAt21h(){
-      let obj = Object.values(this.weather_at_21h);
-   if(obj.indexOf('Cloudy') !== -1 || obj.indexOf('Overcast') !== -1){
-      return this.weatherTypes.overcast;
-    }
-    else if(obj.indexOf('Snow')!== -1 || obj.indexOf('Moderate snow')!== -1 || obj.indexOf('Light snow')!== -1 || obj.indexOf('Light snow showers')!== -1){
-      return this.weatherTypes.snow;
-    }
-    else if(obj.indexOf('Rainy') !== -1 || obj.indexOf('Light rain shower')!== -1){
-      return this.weatherTypes.rainy;
-    }
-    else if(obj.indexOf('Clear')!== -1 || obj.indexOf('Sunny') !== -1){
-      return this.weatherTypes.clear;
-    }
-    else if(obj.indexOf('Mist') !== -1){
-      return this.weatherTypes.mist;
-    }
-    else if(obj.indexOf('Fog') !== -1 || obj.indexOf('Freezing fog')!== -1 ){
-      return this.weatherTypes.fog;
-    }
-    else if(obj.indexOf('Drizzle') !== -1 || obj.indexOf('Light drizzle')!== -1 || obj.indexOf('Light rain')!== -1){
-      return this.weatherTypes.drizzle;
-    }
-    else if(obj.indexOf('Partly cloudy') !== -1){
-      return this.weatherTypes.partly_cloudy;
-    }
-    else if(obj.indexOf('Heavy snow') !== -1){
-      return this.weatherTypes.heavy_snow;
-    }
-    else if(obj.indexOf('Light sleet') !== -1){
-      return this.weatherTypes.sleet;
-    }
-    else if(obj.indexOf('Patchy rain possible') !== -1){
-      return this.weatherTypes.patchy_rain_possible;
-    }
-  },
-  getDate(){
-    let date = new Date();
-    return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
-  }
 },
-  async mounted() {
-    this.fetchWeather();
+    async mounted() {
+      await this.fetchWeather();
   },
+    created(){
+      this.weatherTimes.forEach(time => {
+          this.weatherTime[time] ={
+          [`forecast_${time}h`]: 0,
+          [`temperature_at_${time}h`]: 0
+        }
+        })
+  }
 }
 </script>
 
@@ -545,9 +215,12 @@ background-attachment: fixed;
   background-color: rgba(255, 255, 255, 0.3);
   border: none;
   padding: 10px;
-  box-shadow: 1px 1px 1px 1px grey;
 }
-
+.error-p{
+  color: red;
+  margin-top: 15px;
+  text-align: center;
+}
 .input-search:focus {
   background-color: rgba(255, 255, 255, 0.5);
 }
