@@ -389,8 +389,6 @@ background-attachment: fixed;
 .todays-weather{
   display: flex;
   flex-direction: row;
-  flex-basis: 100%;
-  max-width: 100%;
   margin-top: 1rem;
   color: white;
   flex-wrap: wrap;
@@ -427,15 +425,17 @@ background-attachment: fixed;
   display: flex;
   flex-direction: row;
   align-items: center;
+  border-width: 10px 0 0 0;
+  border-style: solid none none none;
+  border-image: -webkit-linear-gradient(to right, #8e2de2, #4a00e0) 1;
   border-image: linear-gradient(to right, #8e2de2, #4a00e0) 1;
-  border-top: 10px solid;
+  outline:none;
   margin-top: 1rem;
+  text-align: center;
   justify-content: center;
 }
 .weather-for-2-days{
-  flex-direction: column;
-  display:flex;
-  align-items: center;
+  display: block;
   flex-basis: 16.66%;
 }
 .weather-for-2-days-first-p{
