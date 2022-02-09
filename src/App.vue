@@ -7,7 +7,7 @@
             placeholder="Enter city name..."
             class="input-search"
             v-model="city"
-            @keyup.enter="fetchWeather"
+            @keyup.enter="fetchWeather()"
         >
       </div>
       <div v-if="error" class="error-p">
@@ -86,11 +86,48 @@
           <img src="./assets/animated/extreme-snow.svg" v-if="getWeatherTypeByHour(hour) === 'Heavy snow'">
           <img src="./assets/animated/sleet.svg" v-if="getWeatherTypeByHour(hour) === 'Light sleet'">
           <img src="./assets/animated/patchy_rain_possible.svg" v-if="getWeatherTypeByHour(hour) === 'Patchy rain possible'">
-
           </div>
-          <p class="todays-p">{{ Math.round( weatherTime[hour][`temperature_at_${hour}h`]) }}&#176;</p>
+          <p class="todays-p">{{ Math.round( weatherTime[hour][`temperature_at_${hour}h`] ) }}&#176;</p>
         </div>
       </div>
+     <p class="next-2-days-p">Next 2 days</p>
+     <div class="next-2-days">
+       <div v-for="days in weatherDays" :key="days" class="next-2-days-inner">
+         <div class="weather-for-2-days">
+           <p class="weather-for-2-days-first-p">{{ getDayForNextTwoDays(days) }}</p>
+           <p class="weather-for-2-days-second-p">{{ getDateForNextTwoDays(days) }}</p>
+         </div>
+         <div class="weather-for-2-days weather-for-2-days-svg">
+          <img src="./assets/animated/cloudy.svg" v-if="getWeatherTypeByDays(days) === 'Cloudy' || getWeatherTypeByDays(days) === 'Overcast'">
+          <img src="./assets/animated/snowy-6.svg" v-if="getWeatherTypeByDays(days) === 'Moderate snow' || getWeatherTypeByDays(days) === 'Snow' || getWeatherTypeByDays(days) === 'Light snow' || getWeatherTypeByDays(days) === 'Light snow showers'">
+          <img src="./assets/animated/rainy-7.svg" v-if="getWeatherTypeByDays(days) === 'Rainy' || getWeatherTypeByDays(days) === 'Light rain showers'">
+          <img src="./assets/animated/day.svg" v-if="getWeatherTypeByDays(days) === 'Clear' || getWeatherTypeByDays(days) === 'Sunny'">
+          <img src="./assets/animated/mist.svg" v-if="getWeatherTypeByDays(days) === 'Mist'">
+          <img src="./assets/animated/fog.svg" v-if="getWeatherTypeByDays(days) === 'Fog' || getWeatherTypeByDays(days) === 'Freezing fog'"> 
+          <img src="./assets/animated/rainy-4.svg" v-if="getWeatherTypeByDays(days) === 'Drizzle' || getWeatherTypeByDays(days) === 'Light rain' || getWeatherTypeByDays(days) === 'Light drizzle'">
+          <img src="./assets/animated/partly-cloudy-day.svg" v-if="getWeatherTypeByDays(days) === 'Partly cloudy'"> 
+          <img src="./assets/animated/extreme-snow.svg" v-if="getWeatherTypeByDays(days) === 'Heavy snow'">
+          <img src="./assets/animated/sleet.svg" v-if="getWeatherTypeByDays(days) === 'Light sleet'">
+          <img src="./assets/animated/patchy_rain_possible.svg" v-if="getWeatherTypeByDays(days) === 'Patchy rain possible'">
+         </div>
+         <div class="weather-for-2-days">
+           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[days].temp_min_today) }}&deg;</p>
+           <p class="weather-for-2-days-second-p">Low</p>
+         </div>
+         <div class="weather-for-2-days">
+           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[days].temp_max_today) }}&deg;</p>
+           <p class="weather-for-2-days-second-p">High</p>
+         </div>
+         <div class="weather-for-2-days">
+           <p class="weather-for-2-days-first-p">{{ weatherDay[days].max_wind }} m/s</p>
+           <p class="weather-for-2-days-second-p">Wind</p>
+         </div>
+         <div class="weather-for-2-days">
+           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[days].feels_like_today) }}&deg;</p>
+           <p class="weather-for-2-days-second-p">Feels like</p>
+         </div>
+       </div>
+     </div>
     </div>
   </div>
 </template>
@@ -110,13 +147,16 @@ export default {
       weather: {},
       weatherTimes: [3,6,9,12,15,18,21],
       weatherTime: [],
+      weatherDays: [1,2],
+      weatherDay: [],
       error: false,
     }
   },
   methods: {
     async fetchWeather() {
       try {
-        const {data} = await axios.get(`${this.url}?key=${this.api_key}&q=${this.city}&days=1&aqi=no&alerts=no`);
+        const {data} = await axios.get(`${this.url}?key=${this.api_key}&q=${this.city}&days=10&aqi=no&alerts=no`);
+        console.log(data);
         this.error = false;
         this.weather = {
           city: data.location.name || 'Unknown',
@@ -136,45 +176,73 @@ export default {
           [`temperature_at_${time}h`]: data.forecast.forecastday[0].hour[time].temp_c,
           }
         })
-        
+
+      this.weatherDays.forEach(days => {
+        this.weatherDay[days] = {
+          temp_min_today: data.forecast.forecastday[days].day.mintemp_c,
+          temp_max_today: data.forecast.forecastday[days].day.maxtemp_c,
+          max_wind: data.forecast.forecastday[days].day.maxwind_mph,
+          forecast_today: data.forecast.forecastday[days].day.condition.text,
+          feels_like_today: data.forecast.forecastday[days].hour[18].feelslike_c,
+          date: data.forecast.forecastday[days].date
+        }
+      })
+
       } catch (err) {
        this.error = true;
 
-       this.weatherTimes.forEach(time => {
-          this.weatherTime[time] ={
-          [`forecast_${time}h`]: 0,
-          [`temperature_at_${time}h`]: 0
-        }
-        })
-        
+       this.catchErrorForHourlyWeather();
+       this.catchErrorForDailyWeather();
       this.city = '';
     }
     },
-
-    getWeatherTypeByHour(hour){
-      return this.weatherTime[hour]?.[`forecast_${hour}h`];
-    },
-
-    getCurrentWeather(){
-     return this.weather.forecast;
-    },
-
-    getDate(){
-      let date = new Date();
-      return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
-    }
-},
-    async mounted() {
-      await this.fetchWeather();
-  },
-    created(){
+    catchErrorForHourlyWeather(){
       this.weatherTimes.forEach(time => {
           this.weatherTime[time] ={
           [`forecast_${time}h`]: 0,
           [`temperature_at_${time}h`]: 0
         }
         })
-  }
+        return this.weatherTime;
+    },
+    catchErrorForDailyWeather(){
+      this.weatherDays.forEach(days => {
+        this.weatherDay[days] = {
+          temp_min_today: 0,
+          temp_max_today: 0,
+          feels_like_today: 0,
+          forecast_today: 'Unknown',
+        }
+      })
+    },
+    getWeatherTypeByHour(hour){
+      return this.weatherTime[hour]?.[`forecast_${hour}h`];
+    },
+    getCurrentWeather(){
+     return this.weather.forecast;
+    },
+    getWeatherTypeByDays(days){
+     return this.weatherDay[days]?.forecast_today;
+    },
+    getDate(){
+      let date = new Date();
+      return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
+    },
+    getDayForNextTwoDays(days){
+      let date = new Date(this.weatherDay[days].date)
+      return this.days[date.getDay()];
+    },
+    getDateForNextTwoDays(days){
+      return this.weatherDay[days].date.split('').slice(5).join('')
+    },
+},
+    async mounted() {
+      await this.fetchWeather();
+},
+    created(){
+      this.catchErrorForHourlyWeather();
+      this.catchErrorForDailyWeather();
+}
 }
 </script>
 
@@ -215,6 +283,7 @@ background-attachment: fixed;
   background-color: rgba(255, 255, 255, 0.3);
   border: none;
   padding: 10px;
+  color: white;
 }
 .error-p{
   color: red;
@@ -334,7 +403,7 @@ background-attachment: fixed;
   max-width: calc(14.2857142857% - 15px);
   align-items: center;
   padding: 0.6rem;
-  margin: 15px 15px 0px 0px;
+  margin: 15px 7.5px 0px 7.5px;
   background-color: rgba(255,255,255,0.3);
   border-radius: 0.6rem;
   height: 100%;
@@ -345,9 +414,39 @@ background-attachment: fixed;
 .todays-svg{
   width: 5em;
 }
-.reseting-margin-21h{
-      margin-right: 0px;
-    }
+.next-2-days-p{
+  color: white;
+  margin-top: 1.2rem;
+}
+.next-2-days{
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 100%;
+}
+.next-2-days-inner{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-image: linear-gradient(to right, #8e2de2, #4a00e0) 1;
+  border-top: 10px solid;
+  margin-top: 1rem;
+  justify-content: center;
+}
+.weather-for-2-days{
+  flex-direction: column;
+  display:flex;
+  align-items: center;
+  flex-basis: 16.66%;
+}
+.weather-for-2-days-first-p{
+  color: white;
+}
+.weather-for-2-days-second-p{
+  color: rgba(255,255,255,0.5);
+}
+.weather-for-2-days-svg{
+  max-width: 5em;
+}
 @media(max-width: 975px){
   .main-container{
     max-width: 720px;
@@ -394,9 +493,6 @@ background-attachment: fixed;
       flex-basis: calc(16.6666666667% - 15px);
       max-width: calc(16.6666666667% - 15px);
     }
-    .reseting-margin-18h{
-      margin-right: 0px;
-    }
   }
    @media(max-width: 550px){
      .todays-svg{
@@ -409,11 +505,17 @@ background-attachment: fixed;
       flex-basis: 20%;
       max-width: 20%;
     }
-    .reseting-margin-12h{
-      margin-right: 0px;
+    .weather-for-2-days-first-p{
+      font-size: 0.7rem;
     }
-    .reseting-margin-18h{
-      margin-right: 15px;
+    .weather-for-2-days-second-p{
+      font-size: 0.7rem;
+    }
+    .weather-for-2-days-svg{
+      max-width: 4em;
+    }
+    .next-2-days-inner{
+      border-top: 5px solid;
     }
    }
   @media(max-width: 380px){
