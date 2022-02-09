@@ -112,11 +112,11 @@
          </div>
          <div class="weather-for-2-days">
            <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[days].temp_min_today) }}&deg;</p>
-           <p class="weather-for-2-days-second-p">Low</p>
+           <p class="weather-for-2-days-second-p">Lowest</p>
          </div>
          <div class="weather-for-2-days">
            <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[days].temp_max_today) }}&deg;</p>
-           <p class="weather-for-2-days-second-p">High</p>
+           <p class="weather-for-2-days-second-p">Highest</p>
          </div>
          <div class="weather-for-2-days">
            <p class="weather-for-2-days-first-p">{{ weatherDay[days].max_wind }} m/s</p>
@@ -456,6 +456,15 @@ background-attachment: fixed;
     .main-container{
       margin: 0;
     }
+    .next-2-days-p{
+      margin-left: 0.5rem;
+    }
+    .next-2-days-inner{
+      margin: 1rem 0.5rem 0rem 0.5rem;
+    }
+    .todays-weather-text{
+      margin-left: 0.5rem;
+    }
    .searched-weather{
      justify-content: center;
    }
@@ -498,9 +507,6 @@ background-attachment: fixed;
      .todays-svg{
       width: 3.75em;
     }
-    .todays-weather-text{
-      margin-left: 1rem;
-    }
     .todays-days{
       flex-basis: 20%;
       max-width: 20%;
@@ -516,6 +522,12 @@ background-attachment: fixed;
     }
     .next-2-days-inner{
       border-top: 5px solid;
+    }
+    .todays-p{
+      font-size: 0.8rem;
+    }
+    .next-2-days-p{
+      font-size: 0.8rem;
     }
    }
   @media(max-width: 380px){
@@ -538,9 +550,6 @@ background-attachment: fixed;
     }
     .todays-svg{
       width: 3.125em;
-    }
-    .todays-p{
-      font-size: 0.7rem;
     }
   }
 }
