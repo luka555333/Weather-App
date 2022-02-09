@@ -233,7 +233,7 @@ export default {
       return this.days[date.getDay()];
     },
     getDateForNextTwoDays(days){
-      return this.weatherDay[days].date.split('').slice(5).join('')
+      return this.weatherDay[days]?.date?.split('').slice(5).join('')
     },
 },
     async mounted() {
