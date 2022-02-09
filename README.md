@@ -1,4 +1,5 @@
-# hello-world
+# Weathr App
+Live demo at: https://weatherappbykazic.netlify.app
 
 ## Project setup
 ```
