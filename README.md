@@ -1,4 +1,6 @@
-# Weathr App
+# READ ME
+Created weather app thats tracking weather of any town you type inside input. 
+Used Axios for api request.
 Live demo at: https://weatherappbykazic.netlify.app
 
 ## Project setup
