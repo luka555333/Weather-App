@@ -1,0 +1,12 @@
+$background-linear: linear-gradient(to right, #0072ff, #00c6ff);
+$background-linear-ios: -webkit-linear-gradient(to right, #0072ff, #00c6ff);
+$border-linear-ios: -webkit-linear-gradient(to right, #8e2de2, #4a00e0) 1;
+$border-linear: linear-gradient(to right, #8e2de2, #4a00e0) 1;
+$light-gray: rgba(255, 255, 255, 0.5);
+@mixin flex-positioning(){
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: 33.3333333333%;
+  max-width: 33.3333333333%;
+}

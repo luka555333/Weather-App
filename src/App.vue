@@ -246,21 +246,22 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
-
+@import "./scss/variables.scss";
 * {
   padding: 0px;
   margin: 0px;
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
+
 }
 html{
   width: 100%;
 }
 body {
-background: -webkit-linear-gradient(to right, #0072ff, #00c6ff);
-background: linear-gradient(to right, #0072ff, #00c6ff);
+background: $background-linear-ios;
+background: $background-linear;
 background-attachment: fixed;
 }
 
@@ -280,7 +281,7 @@ background-attachment: fixed;
 .input-search {
   outline: none;
   border-radius: 0 14px 0 14px;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: $light-gray;
   border: none;
   padding: 10px;
   color: white;
@@ -291,7 +292,7 @@ background-attachment: fixed;
   text-align: center;
 }
 .input-search:focus {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: $light-gray;
 }
 
 .location-and-date {
@@ -359,25 +360,13 @@ background-attachment: fixed;
   max-width: 100%; 
 }
 .highest{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-basis: 33.3333333333%;
-  max-width: 33.3333333333%;
+  @include flex-positioning;
 }
 .lowest{
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  flex-basis: 33.3333333333%;
-  max-width: 33.3333333333%;
+  @include flex-positioning;
 }
 .rain{
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  flex-basis: 33.3333333333%;
-  max-width: 33.3333333333%;
+  @include flex-positioning;
 }
 .weather-text-inner{
   color: rgba(255,255,255,0.5);
@@ -427,9 +416,8 @@ background-attachment: fixed;
   align-items: center;
   border-width: 10px 0 0 0;
   border-style: solid none none none;
-  border-image: -webkit-linear-gradient(to right, #8e2de2, #4a00e0) 1;
-  border-image: linear-gradient(to right, #8e2de2, #4a00e0) 1;
-  outline:none;
+  border-image: $border-linear-ios;
+  border-image: $border-linear;
   margin-top: 1rem;
   text-align: center;
   justify-content: center;
