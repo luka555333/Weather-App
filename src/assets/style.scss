@@ -22,8 +22,24 @@ background-attachment: fixed;
   margin: 0 auto;
   max-width: 1000px;
 }
-.home-p{
+nav{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
   margin-top: 1.25rem;
+}
+.router{
+  font-size: 1.25rem;
+  color: white;
+  text-decoration: none;
+  transition: 0.7s ease-in;
+  border-radius: 10px;
+  padding: 0.6rem;
+}
+.router:hover{
+  background-color: rgba(255,255,255,0.3);
+
 }
 .search-weather {
   margin-top: 20px;
@@ -31,7 +47,6 @@ background-attachment: fixed;
   align-items:center;
   display:flex;
 }
-
 .input-search {
   outline: none;
   border-radius: 0 14px 0 14px;
@@ -54,25 +69,6 @@ background-attachment: fixed;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-}
-
-.router-link-for-detailed{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-basis: 50%;
-}
-.link-to-detailed{
-  font-size: 0.8rem;
-  color: white;
-  text-decoration: none;
-  margin-top: 1rem;
-  text-align: center;
-  transition: 0.7s ease-in;
-  border-radius: 5px;
-}
-.link-to-detailed:hover{
-   background-color: rgba(255,255,255,0.3);
 }
 .searched-town-p{
   color: white;

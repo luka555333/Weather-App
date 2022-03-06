@@ -14,21 +14,17 @@ const store = new Vuex.Store({
    state: {
      data: {
      },
-     
    },
   mutations: {
     setData(state, data){
       state.data = data;
     },
-    setCity(state, city){
-      state.city = city;
-    }
   },
   actions: {
-     async getDataFromApi({ commit }, city){
-     await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=cee71b1b0f08435abfc112252222601&q=${city}&days=10&aqi=no&alerts=no`)
-      .then(res => commit('setData', res.data))
-    }
+     async FetchDataFromApi({ commit }, city){
+        await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=cee71b1b0f08435abfc112252222601&q=${city}&days=10&aqi=no&alerts=no`)
+         .then(res => commit('setData', res.data));
+     }
   }
 })
 
@@ -38,6 +34,7 @@ const routes = [
   {path: '/Home', component: Home}
 ]
 const router = new VueRouter({
+  mode: 'history',
   routes,
 })
 Vue.config.productionTip = false
