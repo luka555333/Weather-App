@@ -131,7 +131,6 @@
 </template>
 
 <script>
-/*import axios from 'axios';*/
 
 export default {
   name: 'App',
@@ -178,6 +177,7 @@ export default {
        this.error = true;
        this.catchErrorForHourlyWeather();
        this.catchErrorForDailyWeather();
+       this.catchErrorForMainWeather();
        this.city = '';
       }
     
@@ -201,17 +201,31 @@ export default {
         }
       })
     },
+    catchErrorForMainWeather(){
+      this.weather = {
+        city: 'Unknown',
+        temperature: 0,
+        forecast: 'Unknown',
+        temp_min: 0,
+        temp_max: 0,
+        wind: 0,
+        sunrise: 'Unknown',
+        sunset: 'Unknown',
+        feels_like: 0
+      }
+    },
+
     fillWeatherObjectWithApiData(){
       this.weather = {
-          city: this.$store.state.data.location.name || 'Unknown',
-          temperature: this.$store.state.data.current.temp_c || 0,
-          forecast: this.$store.state.data.current.condition.text || 'Unknown',
-          temp_min: this.$store.state.data.forecast.forecastday[0].day.mintemp_c || 0,
-          temp_max: this.$store.state.data.forecast.forecastday[0].day.maxtemp_c || 0,
-          wind: this.$store.state.data.current.wind_mph || 0,
-          sunrise: this.$store.state.data.forecast.forecastday[0].astro.sunrise || 'Unknown',
-          sunset: this.$store.state.data.forecast.forecastday[0].astro.sunset || 'Unknown',
-          feels_like: this.$store.state.data.current.feelslike_c || 0
+          city: this.$store.state.data.location.name,
+          temperature: this.$store.state.data.current.temp_c,
+          forecast: this.$store.state.data.current.condition.text,
+          temp_min: this.$store.state.data.forecast.forecastday[0].day.mintemp_c,
+          temp_max: this.$store.state.data.forecast.forecastday[0].day.maxtemp_c,
+          wind: this.$store.state.data.current.wind_mph,
+          sunrise: this.$store.state.data.forecast.forecastday[0].astro.sunrise,
+          sunset: this.$store.state.data.forecast.forecastday[0].astro.sunset,
+          feels_like: this.$store.state.data.current.feelslike_c
         }
     },
     getWeatherTypeByHour(hour){
@@ -238,11 +252,6 @@ export default {
     async mounted() {
      await this.getWeather();
 },
-    created(){
-      this.catchErrorForHourlyWeather();
-      this.catchErrorForDailyWeather();
-      
-}
 }
 </script>
 
