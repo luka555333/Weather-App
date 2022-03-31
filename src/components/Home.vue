@@ -25,7 +25,7 @@
           <img src="../assets/animated/day.svg" v-if="getCurrentWeather() === 'Clear' || getCurrentWeather() === 'Sunny'">
           <img src="../assets/animated/mist.svg" v-if="getCurrentWeather() === 'Mist'">
           <img src="../assets/animated/fog.svg" v-if="getCurrentWeather() === 'Fog' || getCurrentWeather() === 'Freezing fog'"> 
-          <img src="../assets/animated/rainy-4.svg" v-if="getCurrentWeather() === 'Drizzle' || getCurrentWeather() === 'Light rain' || getCurrentWeather() === 'Light drizzle' || getCurrentWeather() === 'Rainy'">
+          <img src="../assets/animated/rainy-4.svg" v-if="getCurrentWeather() === 'Drizzle' || getCurrentWeather() === 'Light rain' || getCurrentWeather() === 'Light drizzle' || getCurrentWeather() === 'Rainy' || getCurrentWeather() === 'Patchy light drizzle'">
           <img src="../assets/animated/partly-cloudy-day.svg" v-if="getCurrentWeather() === 'Partly cloudy'"> 
           <img src="../assets/animated/extreme-snow.svg" v-if="getCurrentWeather() === 'Heavy snow' || getCurrentWeather() === 'Moderate or heavy snow showers' || getCurrentWeather() === 'Patchy moderate snow'">
           <img src="../assets/animated/sleet.svg" v-if="getCurrentWeather() === 'Light sleet' || getCurrentWeather() === 'Light sleet showers'">
@@ -80,7 +80,7 @@
           <img src="../assets/animated/day.svg" v-if="getWeatherTypeByHour(hour) === 'Clear' || getWeatherTypeByHour(hour) === 'Sunny'">
           <img src="../assets/animated/mist.svg" v-if="getWeatherTypeByHour(hour) === 'Mist'">
           <img src="../assets/animated/fog.svg" v-if="getWeatherTypeByHour(hour) === 'Fog' || getWeatherTypeByHour(hour) === 'Freezing fog'"> 
-          <img src="../assets/animated/rainy-4.svg" v-if="getWeatherTypeByHour(hour) === 'Drizzle' || getWeatherTypeByHour(hour) === 'Rainy' || getWeatherTypeByHour(hour) === 'Light rain' || getWeatherTypeByHour(hour) === 'Light drizzle'">
+          <img src="../assets/animated/rainy-4.svg" v-if="getWeatherTypeByHour(hour) === 'Drizzle' || getWeatherTypeByHour(hour) === 'Rainy' || getWeatherTypeByHour(hour) === 'Light rain' || getWeatherTypeByHour(hour) === 'Light drizzle' || getWeatherTypeByHour(hour) === 'Patchy light drizzle'">
           <img src="../assets/animated/partly-cloudy-day.svg" v-if="getWeatherTypeByHour(hour) === 'Partly cloudy'"> 
           <img src="../assets/animated/extreme-snow.svg" v-if="getWeatherTypeByHour(hour) === 'Heavy snow' || getWeatherTypeByHour(hour) === 'Moderate or heavy snow showers' || getWeatherTypeByHour(hour) === 'Patchy moderate snow'">
           <img src="../assets/animated/sleet.svg" v-if="getWeatherTypeByHour(hour) === 'Light sleet' || getWeatherTypeByHour(hour) === 'Light sleet showers'">
@@ -103,7 +103,7 @@
           <img src="../assets/animated/day.svg" v-if="getWeatherTypeByDays(days) === 'Clear' || getWeatherTypeByDays(days) === 'Sunny'">
           <img src="../assets/animated/mist.svg" v-if="getWeatherTypeByDays(days) === 'Mist'">
           <img src="../assets/animated/fog.svg" v-if="getWeatherTypeByDays(days) === 'Fog' || getWeatherTypeByDays(days) === 'Freezing fog'"> 
-          <img src="../assets/animated/rainy-4.svg" v-if="getWeatherTypeByDays(days) === 'Drizzle' || getWeatherTypeByDays(days) === 'Rainy' || getWeatherTypeByDays(days) === 'Light rain' || getWeatherTypeByDays(days) === 'Light drizzle'">
+          <img src="../assets/animated/rainy-4.svg" v-if="getWeatherTypeByDays(days) === 'Drizzle' || getWeatherTypeByDays(days) === 'Rainy' || getWeatherTypeByDays(days) === 'Light rain' || getWeatherTypeByDays(days) === 'Light drizzle' || getWeatherTypeByDays(days) === 'Patchy light drizzle'">
           <img src="../assets/animated/partly-cloudy-day.svg" v-if="getWeatherTypeByDays(days) === 'Partly cloudy'"> 
           <img src="../assets/animated/extreme-snow.svg" v-if="getWeatherTypeByDays(days) === 'Heavy snow' || getWeatherTypeByDays(days) === 'Moderate or heavy snow showers' || getWeatherTypeByDays(days) === 'Patchy moderate snow'">
           <img src="../assets/animated/sleet.svg" v-if="getWeatherTypeByDays(days) === 'Light sleet' || getWeatherTypeByDays(days) === 'Light sleet showers'">
@@ -172,6 +172,7 @@ export default {
           date: this.$store.state.data.forecast.forecastday[days].date
         }
       })
+      console.log(this.weatherTime);
 
       } catch (err) {
        this.error = true;
@@ -252,7 +253,14 @@ export default {
     async mounted() {
      await this.getWeather();
 },
+     created(){
+       this.catchErrorForHourlyWeather();
+       this.catchErrorForDailyWeather();
+       this.catchErrorForMainWeather();
 }
+} 
+   
+
 </script>
 
 <style lang="scss">
