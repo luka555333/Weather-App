@@ -5,6 +5,9 @@ Used Axios for api request.<br>
 Used Vuex store for state managment and Vue Router for links.<br>
 <b>Work is still in progress...</b><br>
 Live demo at: https://weatherappbykazic.netlify.app<br>
+
+
+
 <img src="WeatherApp.gif" width="50%">
 
 ## Project setup
