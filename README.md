@@ -4,7 +4,7 @@ Used Axios for api request.<br>
 <b>Work is still in progress...</b><br>
 Live demo at: https://weatherappbykazic.netlify.app
 
-![](WeatherApp.gif)
+![](WeatherApp.gif = 250x250)
 
 ## Project setup
 ```
