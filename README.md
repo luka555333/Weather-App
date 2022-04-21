@@ -4,6 +4,8 @@ Used Axios for api request.<br>
 <b>Work is still in progress...</b><br>
 Live demo at: https://weatherappbykazic.netlify.app
 
+![](WeatherApp.gif)
+
 ## Project setup
 ```
 npm install
