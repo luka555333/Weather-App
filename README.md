@@ -1,7 +1,4 @@
-# READ ME
-
 <h1>Weather App</h1><br>
-<hr>
 Created weather app thats tracking weather of any town you type inside input.<br>
 Used Axios for api request.<br>
 Used Vuex store for state managment and Vue Router for links.<br>
