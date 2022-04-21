@@ -1,6 +1,7 @@
 # READ ME
 Created weather app thats tracking weather of any town you type inside input.<br>
 Used Axios for api request.<br>
+Used Vuex store for state managment and Vue Router for links
 <b>Work is still in progress...</b><br>
 Live demo at: https://weatherappbykazic.netlify.app
 
