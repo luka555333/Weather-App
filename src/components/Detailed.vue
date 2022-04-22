@@ -1,8 +1,5 @@
 <template>
 <div>
-  <div class="home">
-   
-  </div>
     <div class="my-div">
     <p>{{ $store.state.data.location.name }} Today</p>
     </div>

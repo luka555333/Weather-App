@@ -23,9 +23,7 @@ background-attachment: fixed;
   max-width: 1000px;
 }
 nav{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @extend %shared-flex-properties;
   flex-direction: row;
   margin-top: 1.25rem;
 }
@@ -43,9 +41,7 @@ nav{
 }
 .search-weather {
   margin-top: 20px;
-  justify-content:center;
-  align-items:center;
-  display:flex;
+  @extend %shared-flex-properties;
 }
 .input-search {
   outline: none;
@@ -103,6 +99,7 @@ nav{
 .text-temperature{
   color: white;
   font-size: 1.3rem;
+  text-align: center;
 }
 .temperature-img{
   display: flex;
@@ -181,16 +178,14 @@ nav{
   flex: 0 0 100%;
 }
 .next-2-days-inner{
-  display: flex;
+  @extend %shared-flex-properties;
   flex-direction: row;
-  align-items: center;
   border-width: 10px 0 0 0;
   border-style: solid none none none;
   border-image: $border-linear-ios;
   border-image: $border-linear;
   margin-top: 1rem;
   text-align: center;
-  justify-content: center;
 }
 .weather-for-2-days{
   display: block;

@@ -10,3 +10,8 @@ $light-gray: rgba(255, 255, 255, 0.5);
   flex-basis: 33.3333333333%;
   max-width: 33.3333333333%;
 }
+%shared-flex-properties{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
