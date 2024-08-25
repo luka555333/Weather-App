@@ -1,11 +1,10 @@
 import { createApp } from "vue";
 import App from "@/App.vue"
 import router from "./router"
+import { createPinia } from 'pinia'
+const pinia = createPinia()
 const app = createApp(App)
 app.use(router)
+app.use(pinia)
 app.mount("#app")
-// async FetchDataFromApi({ commit }, city){
-//    await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=cee71b1b0f08435abfc112252222601&q=${city}&days=10&aqi=no&alerts=no`)
-//     .then(res => commit('setData', res.data));
-// }
 
