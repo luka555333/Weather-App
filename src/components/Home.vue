@@ -35,7 +35,7 @@
           <div class="temperature-in-town">
             <p> {{ Math.round(weather.temperature) }}&#8451; </p>
             <div class="text-temperature">
-            <p class="">{{ this.weather.forecast }}</p>
+            <p class="">{{ weather.forecast }}</p>
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@
         </div>
       </div>
      <p class="next-2-days-p">Next 2 days</p>
-     <div class="next-2-days">
+     <div class="next-2-days" v-if="weatherDay?.length">
        <div v-for="days in weatherDays" :key="days" class="next-2-days-inner">
          <div class="weather-for-2-days">
            <p class="weather-for-2-days-first-p">{{ getDayForNextTwoDays(days) }}</p>
@@ -133,136 +133,134 @@
     </div>
 </template>
 
-<script>
+<script setup>
 
-export default {
-  name: 'App',
-  data() {
-    return {
-      city: 'belgrade',
-      url: 'https://api.weatherapi.com/v1/forecast.json',
-      api_key: 'cee71b1b0f08435abfc112252222601',
-      days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-      months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-      weather: {},
-      weatherTimes: [3,6,9,12,15,18,21],
-      weatherTime: [],
-      weatherDays: [1,2],
-      weatherDay: [],
-      error: false,
-    }
-  },
-  methods: {
-    async getWeather() {
-      try {
-        await this.$store.dispatch('FetchDataFromApi', this.city);
-        this.error = false;
-        this.fillWeatherObjectWithApiData();
-        this.weatherTimes.forEach(time => {
-          this.weatherTime[time] ={
-          [`forecast_${time}h`]: this.$store.state.data.forecast.forecastday[0].hour[time].condition.text,
-          [`temperature_at_${time}h`]: this.$store.state.data.forecast.forecastday[0].hour[time].temp_c,
-          }
-        })
+import {onMounted, ref} from "vue";
+import {useWeatherStore} from "@/store/weather.js";
 
-      this.weatherDays.forEach(days => {
-        this.weatherDay[days] = {
-          temp_min_today: this.$store.state.data.forecast.forecastday[days].day.mintemp_c,
-          temp_max_today: this.$store.state.data.forecast.forecastday[days].day.maxtemp_c,
-          max_wind: this.$store.state.data.forecast.forecastday[days].day.maxwind_mph,
-          forecast_today: this.$store.state.data.forecast.forecastday[days].day.condition.text,
-          feels_like_today: this.$store.state.data.forecast.forecastday[days].hour[18].feelslike_c,
-          date: this.$store.state.data.forecast.forecastday[days].date
-        }
-      })
-      console.log(this.weatherTime);
+const city = ref('belgrade')
+const url = ref('https://api.weatherapi.com/v1/forecast.json')
+const days = ref(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'])
+const months = ref(['January','February','March','April','May','June','July','August','September','October','November','December'])
+const weather = ref(null)
+const weatherTimes = ref([3,6,9,12,15,18,21])
+const weatherTime = ref([])
+const weatherDays = ref([0,1])
+const weatherDay = ref([])
+const error = ref(false)
+const weatherStore = useWeatherStore()
 
-      } catch (err) {
-       this.error = true;
-       this.catchErrorForHourlyWeather();
-       this.catchErrorForDailyWeather();
-       this.catchErrorForMainWeather();
-       this.city = '';
+async function getWeather() {
+  try {
+    await weatherStore.fetchDataFromApi(city.value)
+    error.value = false;
+    fillWeatherObjectWithApiData();
+    weatherTimes.value.forEach(time => {
+      weatherTime.value[time] ={
+        [`forecast_${time}h`]: weatherStore.weather.forecast.forecastday[0].hour[time].condition.text,
+        [`temperature_at_${time}h`]: weatherStore.weather.forecast.forecastday[0].hour[time].temp_c,
       }
-    
-    },
-    catchErrorForHourlyWeather(){
-      this.weatherTimes.forEach(time => {
-          this.weatherTime[time] ={
-          [`forecast_${time}h`]: 0,
-          [`temperature_at_${time}h`]: 0
-        }
-        })
-        return this.weatherTime;
-    },
-    catchErrorForDailyWeather(){
-      this.weatherDays.forEach(days => {
-        this.weatherDay[days] = {
-          temp_min_today: 0,
-          temp_max_today: 0,
-          feels_like_today: 0,
-          forecast_today: 'Unknown',
-        }
-      })
-    },
-    catchErrorForMainWeather(){
-      this.weather = {
-        city: 'Unknown',
-        temperature: 0,
-        forecast: 'Unknown',
-        temp_min: 0,
-        temp_max: 0,
-        wind: 0,
-        sunrise: 'Unknown',
-        sunset: 'Unknown',
-        feels_like: 0
-      }
-    },
 
-    fillWeatherObjectWithApiData(){
-      this.weather = {
-          city: this.$store.state.data.location.name,
-          temperature: this.$store.state.data.current.temp_c,
-          forecast: this.$store.state.data.current.condition.text,
-          temp_min: this.$store.state.data.forecast.forecastday[0].day.mintemp_c,
-          temp_max: this.$store.state.data.forecast.forecastday[0].day.maxtemp_c,
-          wind: this.$store.state.data.current.wind_mph,
-          sunrise: this.$store.state.data.forecast.forecastday[0].astro.sunrise,
-          sunset: this.$store.state.data.forecast.forecastday[0].astro.sunset,
-          feels_like: this.$store.state.data.current.feelslike_c
-        }
-    },
-    getWeatherTypeByHour(hour){
-      return this.weatherTime[hour]?.[`forecast_${hour}h`];
-    },
-    getCurrentWeather(){
-     return this.weather.forecast;
-    },
-    getWeatherTypeByDays(days){
-     return this.weatherDay[days]?.forecast_today;
-    },
-    getDate(){
-      let date = new Date();
-      return this.days[date.getDay()] + ' ' + date.getDate() + ' ' + this.months[date.getMonth()];
-    },
-    getDayForNextTwoDays(days){
-      let date = new Date(this.weatherDay[days].date)
-      return this.days[date.getDay()];
-    },
-    getDateForNextTwoDays(days){
-      return this.weatherDay[days]?.date?.split('').slice(5).join('')
-    },
-},
-    async mounted() {
-     await this.getWeather();
-},
-     created(){
-       this.catchErrorForHourlyWeather();
-       this.catchErrorForDailyWeather();
-       this.catchErrorForMainWeather();
+    })
+    weatherDays.value.forEach(days => {
+      weatherDay.value[days] = {
+        temp_min_today: weatherStore.weather.forecast.forecastday[days].day.mintemp_c,
+        temp_max_today: weatherStore.weather.forecast.forecastday[days].day.maxtemp_c,
+        max_wind: weatherStore.weather.forecast.forecastday[days].day.maxwind_mph,
+        forecast_today: weatherStore.weather.forecast.forecastday[days].day.condition.text,
+        feels_like_today: weatherStore.weather.forecast.forecastday[days].hour[18].feelslike_c,
+        date: weatherStore.weather.forecast.forecastday[days].date
+      }
+    })
+  } catch (err) {
+    error.value = true;
+    catchErrorForHourlyWeather();
+    catchErrorForDailyWeather();
+    catchErrorForMainWeather();
+    city.value = '';
+  }
+
 }
-} 
-   
+
+function catchErrorForHourlyWeather(){
+  weatherTimes.value.forEach(time => {
+    weatherTime.value[time] ={
+      [`forecast_${time}h`]: 0,
+      [`temperature_at_${time}h`]: 0
+    }
+  })
+  return weatherTime.value;
+}
+
+function catchErrorForDailyWeather(){
+  weatherDays.value.forEach(days => {
+    weatherDay.value[days] = {
+      temp_min_today: 0,
+      temp_max_today: 0,
+      feels_like_today: 0,
+      forecast_today: 'Unknown',
+    }
+  })
+}
+function catchErrorForMainWeather(){
+  weather.value = {
+    city: 'Unknown',
+    temperature: 0,
+    forecast: 'Unknown',
+    temp_min: 0,
+    temp_max: 0,
+    wind: 0,
+    sunrise: 'Unknown',
+    sunset: 'Unknown',
+    feels_like: 0
+  }
+}
+
+function fillWeatherObjectWithApiData(){
+  weather.value = {
+    city: weatherStore.weather.location.name,
+    temperature: weatherStore.weather.current.temp_c,
+    forecast: weatherStore.weather.current.condition.text,
+    temp_min: weatherStore.weather.forecast.forecastday[0].day.mintemp_c,
+    temp_max: weatherStore.weather.forecast.forecastday[0].day.maxtemp_c,
+    wind: weatherStore.weather.current.wind_mph,
+    sunrise: weatherStore.weather.forecast.forecastday[0].astro.sunrise,
+    sunset: weatherStore.weather.forecast.forecastday[0].astro.sunset,
+    feels_like: weatherStore.weather.current.feelslike_c
+  }
+}
+
+function getWeatherTypeByHour(hour){
+  return weatherTime.value[hour]?.[`forecast_${hour}h`];
+}
+
+function getCurrentWeather(){
+  return weather.value.forecast;
+}
+
+function getWeatherTypeByDays(days){
+  return weatherDay.value[days]?.forecast_today;
+}
+
+function getDate(){
+  let date = new Date();
+  return days.value[date.getDay()] + ' ' + date.getDate() + ' ' + months.value[date.getMonth()];
+}
+
+function getDayForNextTwoDays(day){
+  let date = new Date(weatherDay.value[day].date)
+  return days.value[date.getDay()];
+}
+
+function getDateForNextTwoDays(days){
+  return weatherDay.value[days]?.date?.split('').slice(5).join('')
+}
+
+onMounted(async () => {
+  await getWeather()
+})
+catchErrorForHourlyWeather();
+catchErrorForMainWeather();
 
 </script>
 
