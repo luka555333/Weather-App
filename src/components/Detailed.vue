@@ -1,35 +1,35 @@
 <template>
 <div>
     <div class="my-div">
-    <p>{{ weatherStore.weather?.data.location.name }} Today</p>
+    <p>{{ weatherStore.weather?.location.name }} Today</p>
     </div>
     <div class="searched-weather">
       <div class="weather-in-details">  
          <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.current.gust_mph }}</p>
+              <p>{{ weatherStore.weather?.current.gust_mph }}</p>
               <p class="weather-text-inner">Gust</p>
             </div>
             <div class="lowest">
-              <p>{{ weatherStore.weather?.data.current.humidity }}</p>
+              <p>{{ weatherStore.weather?.current.humidity }}</p>
               <p class="weather-text-inner">Humidity</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.current.precip_in }}</p>
+              <p>{{ weatherStore.weather?.current.precip_in }}</p>
               <p class="weather-text-inner">Precip In</p>
             </div>
          </div>
          <div class="weather-in-details-inner adding-margin">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.current.cloud }}</p>
+              <p>{{ weatherStore.weather?.current.cloud }}</p>
               <p class="weather-text-inner">Clouds</p>
             </div>
             <div class="lowest">
-              <p>{{ Math.round(weatherStore.weather?.data.current.pressure_in) }}</p>
+              <p>{{ Math.round(weatherStore.weather?.current.pressure_in) }}</p>
               <p class="weather-text-inner">Pressure</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.current.wind_degree }}</p>
+              <p>{{ weatherStore.weather?.current.wind_degree }}</p>
               <p class="weather-text-inner">Wind Deg.</p>
             </div>
          </div>
@@ -37,29 +37,29 @@
       <div class="weather-in-details adding-right-border">  
          <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.current.uv }}</p>
+              <p>{{ weatherStore.weather?.current.uv }}</p>
               <p class="weather-text-inner">UV</p>
             </div>
             <div class="lowest">
-              <p>{{ weatherStore.weather?.data.current.vis_km }}</p>
+              <p>{{ weatherStore.weather?.current.vis_km }}</p>
               <p class="weather-text-inner">Vis Km</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.location.lon }}</p>
+              <p>{{ weatherStore.weather?.location.lon }}</p>
               <p class="weather-text-inner">Lon</p>
             </div>
          </div>
          <div class="weather-in-details-inner adding-margin">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].astro.moonrise }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].astro.moonrise }}</p>
               <p class="weather-text-inner">Moon rise</p>
             </div>
             <div class="lowest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].astro.moonset }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].astro.moonset }}</p>
               <p class="weather-text-inner">Moon Set</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].astro.moon_illumination }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].astro.moon_illumination }}</p>
               <p class="weather-text-inner">Moon ill.</p>
             </div>
          </div>
@@ -69,29 +69,29 @@
       <div class="weather-in-details">  
          <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].day.daily_chance_of_rain }}%</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].day.daily_chance_of_rain }}%</p>
               <p class="weather-text-inner">R. Chance</p>
             </div>
             <div class="lowest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].day.daily_chance_of_snow }}%</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].day.daily_chance_of_snow }}%</p>
               <p class="weather-text-inner">S. Chance</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].day.avghumidity }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].day.avghumidity }}</p>
               <p class="weather-text-inner">Avg Hum.</p>
             </div>
          </div>
          <div class="weather-in-details-inner adding-margin">
             <div class="highest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].day.avgvis_km }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].day.avgvis_km }}</p>
               <p class="weather-text-inner">Avg Vis</p>
             </div>
             <div class="lowest">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].day.maxtemp_c) }}&deg;</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].day.maxtemp_c) }}&deg;</p>
               <p class="weather-text-inner">Max Temp</p>
             </div>
             <div class="rain">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].day.mintemp_c) }}&deg;</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].day.mintemp_c) }}&deg;</p>
               <p class="weather-text-inner">Min Temp</p>
             </div>
          </div>
@@ -99,29 +99,29 @@
       <div class="weather-in-details adding-right-border">  
          <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].day.maxwind_mph) }} mp/h</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].day.maxwind_mph) }} mp/h</p>
               <p class="weather-text-inner">Max Wind</p>
             </div>
             <div class="lowest">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].hour[18].dewpoint_c) }}&deg;</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].hour[18].dewpoint_c) }}&deg;</p>
               <p class="weather-text-inner">Dew Point</p>
             </div>
             <div class="rain">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].hour[18].heatindex_c) }}&deg;</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].hour[18].heatindex_c) }}&deg;</p>
               <p class="weather-text-inner">Heat Index</p>
             </div>
          </div>
          <div class="weather-in-details-inner adding-margin">
             <div class="highest">
-              <p>{{ Math.round(weatherStore.weather?.data.forecast.forecastday[0].hour[18].windchill_c) }}&deg;</p>
+              <p>{{ Math.round(weatherStore.weather?.forecast.forecastday[0].hour[18].windchill_c) }}&deg;</p>
               <p class="weather-text-inner">Wind Chill</p>
             </div>
             <div class="lowest">
-              <p>{{ weatherStore.weather?.data.forecast.forecastday[0].hour[18].wind_dir }}</p>
+              <p>{{ weatherStore.weather?.forecast.forecastday[0].hour[18].wind_dir }}</p>
               <p class="weather-text-inner">Wind Dir</p>
             </div>
             <div class="rain">
-              <p>{{ weatherStore.weather?.data.location.lat }}</p>
+              <p>{{ weatherStore.weather?.location.lat }}</p>
               <p class="weather-text-inner">Lat</p>
             </div>
          </div>
