@@ -13,7 +13,7 @@
         Sorry, the city that you searched doesn't exist. <br> Please try again.
       </div>
       <div class="location-and-date">
-          <p class="searched-town-p">{{ weather.city }}</p>
+          <p class="searched-town-p">{{ weather?.city }}</p>
           <p class="date-p">{{ getDate() }}</p>
       </div>
       <div class="searched-weather">
@@ -22,89 +22,55 @@
           <img :src="WEATHER_ICON_MAP[getCurrentWeather()]" />
           </div>
           <div class="temperature-in-town">
-            <p> {{ Math.round(weather.temperature) }}&#8451; </p>
+            <p> {{ Math.round(weather?.temperature) }}&#8451; </p>
             <div class="text-temperature">
-            <p class="">{{ weather.forecast }}</p>
+            <p class="">{{ weather?.forecast }}</p>
             </div>
           </div>
         </div>
         <div class="weather-in-details">
           <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ Math.round(weather.temp_max) }}&deg;</p>
+              <p>{{ Math.round(weather?.temp_max) }}&deg;</p>
               <p class="weather-text-inner">Highest</p>
             </div>
             <div class="lowest">
-              <p>{{ Math.round(weather.temp_min) }}&deg;</p>
+              <p>{{ Math.round(weather?.temp_min) }}&deg;</p>
               <p class="weather-text-inner">Lowest</p>
             </div>
             <div class="rain">
-              <p>{{ Math.round(weather.feels_like) }}&deg;</p>
+              <p>{{ Math.round(weather?.feels_like) }}&deg;</p>
               <p class="weather-text-inner">Feels like</p>
             </div>
           </div>
           <div class="weather-in-details-inner">
             <div class="highest">
-              <p>{{ weather.sunset }}</p>
+              <p>{{ weather?.sunset }}</p>
               <p class="weather-text-inner">Sunset</p>
             </div>
             <div class="lowest">
-              <p>{{ weather.sunrise }}</p>
+              <p>{{ weather?.sunrise }}</p>
               <p class="weather-text-inner">Sunrise</p>
             </div>
             <div class="rain">
-              <p>{{ weather.wind}} m/s</p>
+              <p>{{ weather?.wind}} m/s</p>
               <p class="weather-text-inner">Wind</p>
             </div>
           </div>
         </div>
       </div>
-      <p class="todays-weather-text">Todays weather</p>
-      <div class="todays-weather">
-        <div class="todays-days" v-for="hour in weatherByTimeOfTheDay" :key="hour" >
-          <p class="todays-p">{{ hour }}h</p>
-          <div class="todays-svg">
-          <img :src="WEATHER_ICON_MAP[getWeatherTypeByHour(hour)]" />
-          </div>
-          <p class="todays-p">{{ Math.round( weatherTime[hour][`temperature_at_${hour}h`] ) }}&#176;</p>
-        </div>
-      </div>
-     <p class="next-2-days-p">Next 2 days</p>
-     <div class="next-2-days" v-if="weatherDay?.length">
-       <div v-for="day in weatherByDay" :key="day" class="next-2-days-inner">
-         <div class="weather-for-2-days">
-           <p class="weather-for-2-days-first-p">{{ getDayForNextTwoDays(day) }}</p>
-           <p class="weather-for-2-days-second-p">{{ getDateForNextTwoDays(day) }}</p>
-         </div>
-         <div class="weather-for-2-days weather-for-2-days-svg">
-          <img :src="WEATHER_ICON_MAP[getWeatherTypeByDays(day)]">
-         </div>
-         <div class="weather-for-2-days">
-           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[day].temp_min_today) }}&deg;</p>
-           <p class="weather-for-2-days-second-p">Lowest</p>
-         </div>
-         <div class="weather-for-2-days">
-           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[day].temp_max_today) }}&deg;</p>
-           <p class="weather-for-2-days-second-p">Highest</p>
-         </div>
-         <div class="weather-for-2-days">
-           <p class="weather-for-2-days-first-p">{{ weatherDay[day].max_wind }} m/s</p>
-           <p class="weather-for-2-days-second-p">Wind</p>
-         </div>
-         <div class="weather-for-2-days">
-           <p class="weather-for-2-days-first-p">{{ Math.round(weatherDay[day].feels_like_today) }}&deg;</p>
-           <p class="weather-for-2-days-second-p">Feels like</p>
-         </div>
-       </div>
-     </div>
+      <WeatherToday v-if="weatherTime.length" :weather-time="weatherTime" />
+      <WeatherInNextTwoDays v-if="weatherDay?.length" :weather-day="weatherDay" />
     </div>
 </template>
 
 <script setup>
-
 import {onMounted, ref} from "vue";
 import {useWeatherStore} from "@/store/weather.js";
 import {WEATHER_ICON_MAP} from "@/constants/index.js";
+import WeatherToday from "@/components/WeatherToday.vue";
+import WeatherInNextTwoDays from "@/components/WeatherInNextTwoDays.vue";
+
 const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const weatherByTimeOfTheDay = [3,6,9,12,15,18,21]
@@ -196,36 +162,17 @@ function fillWeatherObjectWithApiData(){
   }
 }
 
-function getWeatherTypeByHour(hour){
-  return weatherTime.value[hour]?.[`forecast_${hour}h`];
-}
-
 function getCurrentWeather(){
-  return weather.value.forecast;
+  return weather.value?.forecast;
 }
 
-function getWeatherTypeByDays(days){
-  return weatherDay.value[days]?.forecast_today;
-}
 
 function getDate(){
   let date = new Date();
   return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()];
 }
 
-function getDayForNextTwoDays(day){
-  let date = new Date(weatherDay.value[day].date)
-  return days[date.getDay()];
-}
-
-function getDateForNextTwoDays(days){
-  return weatherDay.value[days]?.date?.split('').slice(5).join('')
-}
-
 getWeather()
-catchErrorForHourlyWeather();
-catchErrorForMainWeather();
-
 </script>
 
 <style lang="scss">
