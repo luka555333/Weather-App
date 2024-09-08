@@ -1,64 +1,12 @@
 <template>
     <div class="main-container">
       <div class="search-weather">
-        <input
-            type="text"
-            placeholder="Enter city name..."
-            class="input-search"
-            v-model="city"
-            @keyup.enter="getWeather()"
-        >
+        <WeatherTownInput v-model="city" @keyup.enter="getWeather()"/>
       </div>
       <div v-if="error" class="error-p">
         Sorry, the city that you searched doesn't exist. <br> Please try again.
       </div>
-      <div class="location-and-date">
-          <p class="searched-town-p">{{ weather?.city }}</p>
-          <p class="date-p">{{ getDate() }}</p>
-      </div>
-      <div class="searched-weather">
-        <div class="weather-of-searched-town">
-          <div class="temperature-img">
-          <img :src="WEATHER_ICON_MAP[getCurrentWeather()]" />
-          </div>
-          <div class="temperature-in-town">
-            <p> {{ Math.round(weather?.temperature) }}&#8451; </p>
-            <div class="text-temperature">
-            <p class="">{{ weather?.forecast }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="weather-in-details">
-          <div class="weather-in-details-inner">
-            <div class="highest">
-              <p>{{ Math.round(weather?.temp_max) }}&deg;</p>
-              <p class="weather-text-inner">Highest</p>
-            </div>
-            <div class="lowest">
-              <p>{{ Math.round(weather?.temp_min) }}&deg;</p>
-              <p class="weather-text-inner">Lowest</p>
-            </div>
-            <div class="rain">
-              <p>{{ Math.round(weather?.feels_like) }}&deg;</p>
-              <p class="weather-text-inner">Feels like</p>
-            </div>
-          </div>
-          <div class="weather-in-details-inner">
-            <div class="highest">
-              <p>{{ weather?.sunset }}</p>
-              <p class="weather-text-inner">Sunset</p>
-            </div>
-            <div class="lowest">
-              <p>{{ weather?.sunrise }}</p>
-              <p class="weather-text-inner">Sunrise</p>
-            </div>
-            <div class="rain">
-              <p>{{ weather?.wind}} m/s</p>
-              <p class="weather-text-inner">Wind</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <WeatherBasicInfo :weather />
       <WeatherToday v-if="weatherTime.length" :weather-time="weatherTime" />
       <WeatherInNextTwoDays v-if="weatherDay?.length" :weather-day="weatherDay" />
     </div>
@@ -67,14 +15,12 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {useWeatherStore} from "@/store/weather.js";
-import {WEATHER_ICON_MAP} from "@/constants/index.js";
+import {WEATHER_BY_DAY, WEATHER_BY_TIME_OF_THE_DAY, WEATHER_ICON_MAP} from "@/constants/index.js";
 import WeatherToday from "@/components/WeatherToday.vue";
 import WeatherInNextTwoDays from "@/components/WeatherInNextTwoDays.vue";
+import WeatherBasicInfo from "@/components/WeatherBasicInfo.vue";
+import WeatherTownInput from "@/components/WeatherTownInput.vue";
 
-const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-const weatherByTimeOfTheDay = [3,6,9,12,15,18,21]
-const weatherByDay = [0,1]
 const city = ref('belgrade')
 const weather = ref(null)
 const weatherTime = ref([])
@@ -87,14 +33,14 @@ async function getWeather() {
     await weatherStore.fetchDataFromApi(city.value)
     error.value = false;
     fillWeatherObjectWithApiData();
-    weatherByTimeOfTheDay.forEach(time => {
+    WEATHER_BY_TIME_OF_THE_DAY.forEach(time => {
       weatherTime.value[time] ={
         [`forecast_${time}h`]: weatherStore.weather.forecast.forecastday[0].hour[time].condition.text,
         [`temperature_at_${time}h`]: weatherStore.weather.forecast.forecastday[0].hour[time].temp_c,
       }
 
     })
-    weatherByDay.forEach(days => {
+    WEATHER_BY_DAY.forEach(days => {
       weatherDay.value[days] = {
         temp_min_today: weatherStore.weather.forecast.forecastday[days].day.mintemp_c,
         temp_max_today: weatherStore.weather.forecast.forecastday[days].day.maxtemp_c,
@@ -115,7 +61,7 @@ async function getWeather() {
 }
 
 function catchErrorForHourlyWeather(){
-  weatherByTimeOfTheDay.forEach(time => {
+  WEATHER_BY_TIME_OF_THE_DAY.forEach(time => {
     weatherTime.value[time] ={
       [`forecast_${time}h`]: 0,
       [`temperature_at_${time}h`]: 0
@@ -125,7 +71,7 @@ function catchErrorForHourlyWeather(){
 }
 
 function catchErrorForDailyWeather(){
-  weatherByDay.forEach(days => {
+  WEATHER_BY_DAY.forEach(days => {
     weatherDay.value[days] = {
       temp_min_today: 0,
       temp_max_today: 0,
@@ -160,16 +106,6 @@ function fillWeatherObjectWithApiData(){
     sunset: weatherStore.weather.forecast.forecastday[0].astro.sunset,
     feels_like: weatherStore.weather.current.feelslike_c
   }
-}
-
-function getCurrentWeather(){
-  return weather.value?.forecast;
-}
-
-
-function getDate(){
-  let date = new Date();
-  return days[date.getDay()] + ' ' + date.getDate() + ' ' + months[date.getMonth()];
 }
 
 getWeather()

@@ -1,7 +1,7 @@
 <template>
   <p class="next-2-days-p">Next 2 days</p>
   <div class="next-2-days" >
-    <div v-for="day in weatherByDay" :key="day" class="next-2-days-inner">
+    <div v-for="day in WEATHER_BY_DAY" :key="day" class="next-2-days-inner">
       <div class="weather-for-2-days">
         <p class="weather-for-2-days-first-p">{{ getDayForNextTwoDays(day) }}</p>
         <p class="weather-for-2-days-second-p">{{ getDateForNextTwoDays(day) }}</p>
@@ -30,13 +30,11 @@
 </template>
 
 <script setup>
+import {DAYS, WEATHER_BY_DAY, WEATHER_ICON_MAP} from "@/constants/index.js";
 
-import {WEATHER_ICON_MAP} from "@/constants/index.js";
 const props = defineProps({
   weatherDay: Array
 })
-const weatherByDay = [0,1]
-const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 
 function getWeatherTypeByDays(days){
   return props.weatherDay[days]?.forecast_today;
@@ -44,7 +42,7 @@ function getWeatherTypeByDays(days){
 
 function getDayForNextTwoDays(day){
   let date = new Date(props.weatherDay[day].date)
-  return days[date.getDay()];
+  return DAYS[date.getDay()];
 }
 
 function getDateForNextTwoDays(days){

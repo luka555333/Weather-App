@@ -30,3 +30,7 @@ export const WEATHER_ICON_MAP = {
     'Patchy rain possible': "../src/assets/animated/patchy_rain_possible.svg",
     'Thundery outbreaks possible': "../src/assets/animated/thunderstorms-extreme.svg"
 };
+export const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+export const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+export const WEATHER_BY_TIME_OF_THE_DAY = [3,6,9,12,15,18,21]
+export const WEATHER_BY_DAY = [0,1]
